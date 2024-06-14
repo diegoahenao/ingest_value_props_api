@@ -39,7 +39,7 @@ def get_api_key(api_key_header: str = Security(api_key_header)):
         return api_key_header
     else:
         raise HTTPException(
-            status_code=403, detail="Could not validate credentials"
+            status_code=403, detail="No se fue posible validar las credenciales"
         )
 
 def get_current_user(token: str = Depends(oauth2_scheme)):
