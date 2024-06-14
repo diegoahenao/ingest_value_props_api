@@ -3,6 +3,7 @@ from app.schemas.table_schemas import TapsCreate, PrintsCreate, PaysCreate
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 import logging
+from typing import List
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -18,14 +19,13 @@ class Tables():
             logger.error(f"Error fetching taps: {e}")
             return []
     
-    def create_tap(self, tap: TapsCreate):
+    def create_taps(self, taps: List[TapsCreate]):
         try:
-            new_tap = Taps(**tap.model_dump())
-            self.db.add(new_tap)
+            new_taps = [Taps(**tap.model_dump()) for tap in taps]
+            self.db.bulk_save_objects(new_taps)
             self.db.commit()
-            self.db.refresh(new_tap)
             self.db.close()
-            return new_tap
+            return new_taps
         except SQLAlchemyError as e:
             self.db.rollback()
             logger.error(f"Error creating tap: {e}")
@@ -38,14 +38,13 @@ class Tables():
             logger.error(f"Error fetching prints: {e}")
             return []
 
-    def create_print(self, print: PrintsCreate):
+    def create_prints(self, prints: List[PrintsCreate]):
         try:
-            new_print = Prints(**print.model_dump())
-            self.db.add(new_print)
+            new_prints = [Prints(**print.model_dump()) for print in prints]
+            self.db.bulk_save_objects(new_prints)
             self.db.commit()
-            self.db.refresh(new_print)
             self.db.close()
-            return new_print
+            return new_prints
         except SQLAlchemyError as e:
             self.db.rollback()
             logger.error(f"Error creating print: {e}")
@@ -58,14 +57,13 @@ class Tables():
             logger.error(f"Error fetching pays: {e}")
             return []
 
-    def create_pay(self, pay: PaysCreate):
+    def create_pays(self, pays: List[PaysCreate]):
         try:
-            new_pay = Pays(**pay.model_dump())
-            self.db.add(new_pay)
+            new_pays = [Pays(**pay.model_dump()) for pay in pays]
+            self.db.bulk_save_objects(new_pays)
             self.db.commit()
-            self.db.refresh(new_pay)
             self.db.close()
-            return new_pay
+            return new_pays
         except SQLAlchemyError as e:
             self.db.rollback()
             logger.error(f"Error creating pay: {e}")
